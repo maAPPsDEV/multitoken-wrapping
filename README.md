@@ -1,71 +1,26 @@
-# Solidity Game - [Game Title] Attack
+# Multitoken Wrapping
 
-_Inspired by OpenZeppelin's [Ethernaut](https://ethernaut.openzeppelin.com), [Game Title] Level_
+The challenge is to create a token swapping Solidity smart contract and deploy it on Avalanche. The user should be able to swap either of two ERC20s for a single ERC20 token. For example, you can swap token A or token B for token C. Swaps should also be possible in the reverse direction.Token C should be redeemable for token A or token B. Token exchange rates are one-to-one. Input side ERC20 tokens do not need to swappable for each other. You do not need a method to swap token A for token B.
 
-⚠️Do not try on mainnet!
+A || B <==> C
 
-## Task
+## Provided Stub
 
-Hacker the basic token contract below.
+Attached is a Solidity stub for the Wrapper contract. It contains two methods: `function swap(address token_, uint amount)` and `function unswap(address token_, uint amount)`. Please implement these methods. Feel free to add whatever other methods and contracts are necessary.
 
-1. You are given 20 tokens to start with and you will beat the game if you somehow manage to get your hands on any additional tokens. Preferably a very large amount of tokens.
+## Token Parameters
 
-_Hint:_
+Please give each token its own unique name and symbol. Do not name them tokens A, B, and C. Tokens may all have the same number of decimals.
 
-1. What is an odometer?
+### Token Minting
 
-## What will you learn?
+Tokens A and B should be minted outside of wrapper contract. The wrapper contract should not be able to mint any new A or B tokens. Token C, however, should be minted exclusively from inside the Wrapper contract.
 
-1. Solidity Security Consideration
-2. **Underflow** and **Overflow** in use of unsigned integers
+## External resources
 
-## What is the most difficult challenge?
+Feel free to use any code from OpenZeppelin. You may import their contracts into your own or deploy theirs without modifications. Please refrain from using code from any other source.
 
-**You won't get success to attack if the target contract has been complied in Solidity 0.8.0 or uppper** 🤔
-
-> [**Solidity v0.8.0 Breaking Changes**](https://docs.soliditylang.org/en/v0.8.5/080-breaking-changes.html?highlight=underflow#silent-changes-of-the-semantics)
->
-> Arithmetic operations revert on **underflow** and **overflow**. You can use `unchecked { ... }` to use the previous wrapping behaviour.
->
-> Checks for overflow are very common, so we made them the default to increase readability of code, even if it comes at a slight increase of gas costs.
-
-I had tried to do everything in Solidity 0.8.5 at first time, but it didn't work, as it reverted transactions everytime it met underflow.
-
-Finally, I found that Solidity included those checks by defaults while using sliencely more gas.
-
-So, don't you need to use [`SafeMath`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol)?
-
-## Source Code
-
-⚠️This contract contains a bug or risk. Do not use on mainnet!
-
-```solidity
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.6.0;
-
-contract Token {
-  mapping(address => uint256) balances;
-  uint256 public totalSupply;
-
-  constructor(uint256 _initialSupply) public {
-    balances[msg.sender] = totalSupply = _initialSupply;
-  }
-
-  function transfer(address _to, uint256 _value) public returns (bool) {
-    require(balances[msg.sender] - _value >= 0);
-    balances[msg.sender] -= _value;
-    balances[_to] += _value;
-    return true;
-  }
-
-  function balanceOf(address _owner) public view returns (uint256 balance) {
-    return balances[_owner];
-  }
-}
-
-```
-
-## Configuration
+## Development Environment
 
 ### Install Truffle cli
 
@@ -81,16 +36,12 @@ npm install -g truffle
 yarn install
 ```
 
-## Test and Attack!💥
-
 ### Run Tests
 
 ```
 truffle develop
 test
 ```
-
-You should take ownership of the target contract successfully.
 
 ```
 truffle(develop)> test
@@ -101,12 +52,21 @@ Compiling your contracts...
 ===========================
 > Everything is up to date, there is nothing to compile.
 
+AliceToken:  0x822F1B6529f64f21FE0993362dec121e200286f4
+BobToken:  0xAb8b6B5c59Ad3B76B867a108726d5f22171117F0
+CharlieToken:  0xC9Da8BaEd02215199d23Ad53613715174F3baf08
+Wrapper:  0xe0F87BD970823bddD4231a614640007CdD3cc879
+Owner:  0x68Efcd43A8Dd3b29a36203866106e4f74597e300
 
 
-  Contract: Hacker
-    √ should steal countless of tokens (377ms)
+  Contract: Wrapper
+    √ should initialize scenario (164ms)
+    swap
+      √ should swap token a to token c (630ms)
+    unswap
+      √ should unswap token c to token b (1162ms)
 
 
-  1 passing (440ms)
+  3 passing (9s)
 
 ```
