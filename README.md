@@ -70,3 +70,22 @@ Owner:  0x68Efcd43A8Dd3b29a36203866106e4f74597e300
   3 passing (9s)
 
 ```
+
+## Deploying on Fuji
+
+Please check out `fuji` branch to see more complicated Avalanche deployment process.
+
+## Pseudocode Call Sequence
+1. Deploy AliceToken()
+2. Deploy BobToken()
+3. Deploy CharlieToken()
+4. Deploy Wrapper(CharlieToken.address)
+5. ChalieToken.setWrapper(Wrapper.address)
+6. AliceToken.transfer(Wrapper.address, 1000)
+7. BobToken.transfer(Wrapper.address, 1000)
+8. AliceToken.approve(Wrapper.address, MAX_UINT256)
+9. BobToken.approve(Wrapper.address, MAX_UINT256)
+10. ChalieToken.approve(Wrapper.address, MAX_UINT256)
+
+11. Wrapper.swap(AliceToken.address, 100)
+12. Wrapper.unswap(BobToken.address, 100)
